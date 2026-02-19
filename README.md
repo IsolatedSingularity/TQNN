@@ -2,10 +2,6 @@
 
 Interactive tools for topological quantum neural networks: real-time tensor network simulation, pattern classification with noise robustness, and 3D Tanner graph visualization.
 
-<p align="center">
-  <img src="./Plots/beta.gif?raw=true" alt="beta" width="34" height="34" />
-</p>
-
 ![Real-Time Tensor Network Simulator](Plots/tqnn_overall.png)
 
 ## Overview
@@ -39,6 +35,10 @@ python "Code/Static Visualization/tqnn_sandbox.py"
 python "Code/Static Visualization/static_visualizations.py"
 python "Code/Static Visualization/animated_visualizations.py"
 ```
+
+<p align="center">
+  <img src="./Plots/beta.gif?raw=true" alt="beta" width="34" height="34" />
+</p>
 
 ## Features
 
@@ -233,10 +233,10 @@ $$j_1 \otimes j_2 = \bigoplus_{j_3=|j_1-j_2|}^{j_1+j_2} j_3$$
 ## Next Steps
 
 - [ ] **Qiskit / PennyLane backend**: Integrate quantum circuit backends for hardware-ready execution
-- [ ] **Unit test coverage**: Add pytest suite for core TQNN processor and spin-network encoding
+- [x] **Unit test coverage**: pytest suite for TQNN processor and spin-network encoding (`tests/`)
 - [ ] **GPU acceleration**: Profile and optimize spin-network evaluation with CuPy or JAX
 - [ ] **PyPI packaging**: Package the core TQNN library for `pip install` distribution
-- [ ] **CI/CD pipeline**: Add GitHub Actions for linting, testing, and artifact generation
+- [x] **CI/CD pipeline**: GitHub Actions workflow across Python 3.10/3.11/3.12 (`.github/workflows/ci.yml`)
 - [ ] **Export functionality**: Add save/export for visualization states (PNG, JSON)
 
 > [!NOTE]
