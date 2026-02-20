@@ -1,5 +1,9 @@
 # Topological Quantum Neural Networks
 
+[![CI](https://github.com/IsolatedSingularity/Topological-Quantum-Neural-Networks/actions/workflows/ci.yml/badge.svg)](https://github.com/IsolatedSingularity/Topological-Quantum-Neural-Networks/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 Interactive tools for topological quantum neural networks: real-time tensor network simulation, topological pattern classification, cobordism evolution, and robustness analysis.
 
 ![Real-Time Tensor Network Simulator](Plots/tqnn_overall.png)
@@ -123,20 +127,6 @@ Pre-generated visualizations of the topological structures underlying TQNN compu
 
 ---
 
-## Project Structure
-
-```
-Code/
-  Real Time Simulation/          # Tkinter tensor network simulator (1600+ lines)
-  Image Classification/          # Tkinter 6-panel TQNN classifier
-  Cobordism Viewer/              # Tkinter cobordism evolution viewer
-  Static Visualization/          # Sandbox, static plots, animated GIFs, helpers
-Plots/                           # Generated figures and animations
-References/                      # Source papers (Marciano, Lulli, Fields)
-tests/                           # pytest suite (import + core logic)
-generate_all_plots.py            # Regenerate all static plots and animations
-```
-
 ## Tech Stack
 
 | Category | Tools |
@@ -209,22 +199,44 @@ $$j_1 \otimes j_2 = \bigoplus_{j_3=|j_1-j_2|}^{j_1+j_2} j_3$$
 - [ ] **PyPI packaging**: Package the core TQNN library for `pip install` distribution
 - [x] **CI/CD pipeline**: GitHub Actions workflow across Python 3.10/3.11/3.12 (`.github/workflows/ci.yml`)
 
-> [!NOTE]
-> This implementation simulates topological quantum behavior on classical hardware. While it demonstrates the principles of topological robustness, it does not provide the computational advantages of a true quantum computer.
-
-## Contributing
-
-Contributions are welcome. To get started:
-
-1. Fork the repository and create a feature branch
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run the test suite: `pytest tests/`
-4. Submit a pull request with a clear description of changes
-
-Please follow the existing code style: use `seaborn` mako/cubehelix palettes for visualizations, include docstrings for public functions, and add type hints to function signatures.
-
 ## References
 
-- Marciano, A., et al. *DNNs as the Semi-Classical Limit of TQNNs*.
-- Lulli, M., et al. *Exact hexagonal spin-networks and TQNNs*.
-- Fields, C., et al. *Sequential measurements, TQFTs, and TQNNs*.
+- Marciano, A., Zappala, E., Torda, A., Lulli, M., et al. [*DNNs as the Semi-Classical Limit of TQNNs: The Problem of Generalisation*](https://arxiv.org/abs/2210.13741). arXiv:2210.13741, 2022.
+- Lulli, M., Marciano, A., Zappala, E. [*The Exact Evaluation of Hexagonal Spin-Networks and TQNNs*](https://arxiv.org/abs/2310.03632). arXiv:2310.03632, 2023.
+- Fields, C., Glazebrook, J. F., Marciano, A. [*Sequential Measurements, TQFTs, and TQNNs*](https://arxiv.org/abs/2205.13184). arXiv:2205.13184, 2022.
+- Baez, J. [*Spin Networks in Gauge Theory*](https://arxiv.org/abs/gr-qc/9411007). Advances in Mathematics **117**, 253-272, 1996.
+
+## Citation
+
+If you use this software in your work, please cite:
+
+```bibtex
+@misc{morais2024tqnn,
+  author       = {Morais, Jeffrey},
+  title        = {Topological Quantum Neural Networks},
+  year         = {2024},
+  publisher    = {GitHub},
+  journal      = {GitHub repository},
+  howpublished = {\url{https://github.com/IsolatedSingularity/Topological-Quantum-Neural-Networks}},
+}
+```
+
+## See Also
+
+Other quantum computing projects by the same author:
+
+| Repository | Description |
+|---|---|
+| [Quantum-Chemistry-Eigensolver](https://github.com/IsolatedSingularity/Quantum-Chemistry-Eigensolver) | Variational quantum eigensolver for molecular ground-state energies |
+| [Bloc-Fantome](https://github.com/IsolatedSingularity/Bloc-Fantome) | Quantum-inspired blockchain exploration |
+| [Leonne](https://github.com/btq-ag/Leonne) | Modular consensus networks for cryptographic proof (BTQ) |
+| [QRiNG](https://github.com/btq-ag/QRiNG) | Quantum random number generation for consensus protocols (BTQ) |
+| [QLDPC](https://github.com/btq-ag/QLDPC) | Quantum LDPC code construction and circuit builder (BTQ) |
+
+## Questions and Contact
+
+If you have questions, feedback, or ideas for collaboration, feel free to [open an issue](https://github.com/IsolatedSingularity/Topological-Quantum-Neural-Networks/issues/new) or reach out directly:
+
+- GitHub: [IsolatedSingularity](https://github.com/IsolatedSingularity)
+- Website: [jeffreymorais.netlify.app](https://jeffreymorais.netlify.app/)
+- LinkedIn: [Jeffrey Morais](https://www.linkedin.com/in/jeffrey-morais/)
