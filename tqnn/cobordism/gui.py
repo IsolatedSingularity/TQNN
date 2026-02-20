@@ -43,9 +43,7 @@ import matplotlib.colors as mcolors
 import seaborn as sns
 import networkx as nx
 
-# Add project path for shared helpers
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "Static Visualization"))
-from tqnn_helpers import TQNNPerceptron, create_spin_network_from_pattern, N_LARGE
+from tqnn.helpers import TQNNPerceptron, create_spin_network_from_pattern, N_LARGE
 
 # ─────────────────────────────────────────────────────────────────────────
 # Dark-theme palette (aligned with tensor-network & classifier GUIs)

@@ -10,10 +10,7 @@ import os
 import numpy as np
 import pytest
 
-# Ensure the helpers module is importable
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'Code', 'Static Visualization'))
-
-from tqnn_helpers import (
+from tqnn.helpers import (
     TQNNPerceptron,
     create_spin_network_from_pattern,
     add_topological_defect,

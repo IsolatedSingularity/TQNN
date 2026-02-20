@@ -13,7 +13,6 @@ Outputs are written to Plots/ by default.
 """
 
 import os
-import sys
 
 # Use non-interactive backend so this works in headless CI environments
 import matplotlib
@@ -26,13 +25,10 @@ REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 PLOTS_DIR = os.path.join(REPO_ROOT, 'Plots')
 os.makedirs(PLOTS_DIR, exist_ok=True)
 
-# Add source directories to sys.path so imports resolve
-sys.path.insert(0, os.path.join(REPO_ROOT, 'Code', 'Static Visualization'))
-
 # ---------------------------------------------------------------------------
 # Static visualizations (6 PNGs)
 # ---------------------------------------------------------------------------
-from static_visualizations import (
+from tqnn.visualization.static import (
     plot_braiding_pattern,
     plot_large_braiding_pattern,
     plot_topological_charge_flow,
@@ -53,7 +49,7 @@ STATIC_PLOTS = [
 # ---------------------------------------------------------------------------
 # Animated visualizations (3 GIFs)
 # ---------------------------------------------------------------------------
-from animated_visualizations import (
+from tqnn.visualization.animated import (
     animate_braiding_pattern,
     animate_quantum_gate,
     animate_complex_quantum_circuit,
@@ -92,7 +88,7 @@ def main() -> None:
     # --- Robustness sandbox ---
     print("\n--- Robustness Sandbox ---")
     try:
-        from tqnn_sandbox import run_sandbox
+        from tqnn.visualization.sandbox import run_sandbox
         run_sandbox(
             os.path.join(PLOTS_DIR, 'tqnn_robustness_sandbox.png'),
             os.path.join(PLOTS_DIR, 'tqnn_robustness_animation.gif'),

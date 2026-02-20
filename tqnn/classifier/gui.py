@@ -40,9 +40,7 @@ import matplotlib.patches as mpatches
 import seaborn as sns
 import networkx as nx
 
-# Add project path for helpers
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "Static Visualization"))
-from tqnn_helpers import TQNNPerceptron, add_topological_defect, create_spin_network_from_pattern
+from tqnn.helpers import TQNNPerceptron, add_topological_defect, create_spin_network_from_pattern
 
 # ---------------------------------------------------------------------------
 # Palette & theme constants (match tensor-network simulator exactly)

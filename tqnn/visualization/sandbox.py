@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.animation import FuncAnimation
-from tqnn_helpers import TQNNPerceptron, add_topological_defect
+from tqnn.helpers import TQNNPerceptron, add_topological_defect
 
 # --- Dark Theme Constants ---
 DARK_BG = '#1a1a1a'

@@ -25,15 +25,23 @@ Conventional quantum neural networks rely on parameterized circuits whose gradie
 ```bash
 git clone https://github.com/IsolatedSingularity/Topological-Quantum-Neural-Networks.git
 cd Topological-Quantum-Neural-Networks
-pip install -r requirements.txt
+pip install -e .
 ```
 
 Launch any of the three interactive GUIs:
 
 ```bash
-python "Code/Real Time Simulation/interactive_tqnn_tensor_network.py"   # Tensor network simulator
-python "Code/Image Classification/interactive_tqnn_classifier.py"       # 6-panel classifier
-python "Code/Cobordism Viewer/cobordism_evolution_viewer.py"            # Cobordism viewer
+tqnn-simulator    # Tensor network simulator
+tqnn-classifier   # 6-panel classifier
+tqnn-cobordism    # Cobordism viewer
+```
+
+Or run them as modules:
+
+```bash
+python -m tqnn.simulation.gui
+python -m tqnn.classifier.gui
+python -m tqnn.cobordism.gui
 ```
 
 Or regenerate all static plots and animations in one step:
@@ -60,8 +68,6 @@ Draw a pattern on a 16 × 16 canvas and watch it get encoded, in real time, as a
 | **Semi-classical weights** | Distribution of the Gaussian suppression term across all spins |
 
 The $N_{\text{large}}$ slider (100 to 5000) controls the semi-classical regime: higher values sharpen the amplitude peaks, showing how the TQFT limit converges to classical classification.
-
-![Tensor Network Simulator](Plots/tqnn_overall.png)
 
 |  |  |
 |:--:|:--:|
@@ -130,13 +136,13 @@ The codebase is organized around processor classes that implement the TQFT math 
 
 | Class | Module | Role |
 |---|---|---|
-| `TQNNProcessor` | `interactive_tqnn_tensor_network.py` | Spin-network encoder, 6j-symbol evaluator, TQFT amplitude computation, MPS decomposition |
-| `TQNNSimulator` | `interactive_tqnn_classifier.py` | Pattern generation, noise injection, prototype-based classification pipeline |
-| `CobordismProcessor` | `cobordism_evolution_viewer.py` | TQFT functor evaluation along cylinder, pair-of-pants, and genus-handle cobordisms |
-| `TQNNPerceptron` | `tqnn_helpers.py` | Lightweight classifier: trains prototypes from labeled patterns, predicts via log-amplitude |
-| `TQNNVisualizerGUI` | `interactive_tqnn_tensor_network.py` | 1600-line tkinter app: drawing canvas, 4 synchronized matplotlib panels, tutorial system |
-| `TQNNClassifierGUI` | `interactive_tqnn_classifier.py` | 6-panel dark-themed dashboard for noise-robustness exploration |
-| `CobordismViewerGUI` | `cobordism_evolution_viewer.py` | 4-panel animated viewer with cobordism type selection and parameter sliders |
+| `TQNNProcessor` | `tqnn.simulation.gui` | Spin-network encoder, 6j-symbol evaluator, TQFT amplitude computation, MPS decomposition |
+| `TQNNSimulator` | `tqnn.classifier.gui` | Pattern generation, noise injection, prototype-based classification pipeline |
+| `CobordismProcessor` | `tqnn.cobordism.gui` | TQFT functor evaluation along cylinder, pair-of-pants, and genus-handle cobordisms |
+| `TQNNPerceptron` | `tqnn.helpers` | Lightweight classifier: trains prototypes from labeled patterns, predicts via log-amplitude |
+| `TQNNVisualizerGUI` | `tqnn.simulation.gui` | 1600-line tkinter app: drawing canvas, 4 synchronized matplotlib panels, tutorial system |
+| `TQNNClassifierGUI` | `tqnn.classifier.gui` | 6-panel dark-themed dashboard for noise-robustness exploration |
+| `CobordismViewerGUI` | `tqnn.cobordism.gui` | 4-panel animated viewer with cobordism type selection and parameter sliders |
 
 All GUIs share a consistent dark theme (`#1a1a1a` background, `#00ff88` accent) with matplotlib figures embedded via `FigureCanvasTkAgg`.
 
@@ -162,15 +168,21 @@ The core thesis, inspired by [Marciano et al. (2022)](https://arxiv.org/abs/2210
 
 **Encoding.** Each input value $x_i$ maps to a spin label:
 
-$$j_i = N + \lfloor x_i \rfloor$$
+```math
+j_i = N + \lfloor x_i \rfloor
+```
 
 where $N$ is a large integer placing the system in the semi-classical regime.
 
 **Classification.** The TQFT functor $Z$ maps a cobordism $M$ to a transition amplitude $Z(\Sigma_{\text{in}}) \to Z(\Sigma_{\text{out}})$. For a class $c$ with prototype spins $\bar{j}_c$ and spread $\sigma_c$:
 
-$$A_c \propto \prod_{i} (2j_i + 1) \, e^{-\frac{(j_i - \bar{j}_{c,i})^2}{2\sigma_{c,i}^2}}$$
+```math
+A_c \propto \prod_{i} (2j_i + 1) \, e^{-\frac{(j_i - \bar{j}_{c,i})^2}{2\sigma_{c,i}^2}}
+```
 
-$$\text{prediction} = \arg\max_{c} \left( \log|A_c|^2 \right)$$
+```math
+\text{prediction} = \arg\max_{c} \left( \log|A_c|^2 \right)
+```
 
 The quantum dimension factor $(2j_i + 1)$ and the topological nature of the amplitude are what give TQNNs their noise resilience.
 

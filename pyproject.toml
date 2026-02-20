@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tqnn"
+version = "0.1.0"
+description = "Interactive tools for Topological Quantum Neural Networks"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Jeffrey Morais", email = "jeffrey.morais@mail.mcgill.ca"},
+]
+keywords = [
+    "quantum-computing",
+    "quantum-machine-learning",
+    "topological-quantum-computing",
+    "neural-networks",
+    "spin-networks",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "networkx>=3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/IsolatedSingularity/Topological-Quantum-Neural-Networks"
+Repository = "https://github.com/IsolatedSingularity/Topological-Quantum-Neural-Networks"
+Issues = "https://github.com/IsolatedSingularity/Topological-Quantum-Neural-Networks/issues"
+
+[project.scripts]
+tqnn-simulator = "tqnn.simulation.gui:main"
+tqnn-classifier = "tqnn.classifier.gui:main"
+tqnn-cobordism = "tqnn.cobordism.gui:main"
+
+[tool.setuptools.packages.find]
+include = ["tqnn*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
