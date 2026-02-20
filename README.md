@@ -10,9 +10,9 @@ Interactive tools for topological quantum neural networks: real-time tensor netw
 
 ## Overview
 
-Conventional neural networks learn by adjusting millions of floating-point weights through gradient descent. **Topological Quantum Neural Networks (TQNNs)** take a fundamentally different approach: they encode each input pixel as the *spin color* of an edge on a spin-network, then evaluate a topological quantum field theory (TQFT) transition amplitude to classify patterns. No gradient computation is required.
+This toolkit provides interactive simulators and batch visualization pipelines for **Topological Quantum Neural Networks (TQNNs)**, a gradient-free classification framework where inputs are encoded as spin-networks and classified via [TQFT](https://arxiv.org/abs/2210.13741) transition amplitudes. Because the classification signal is a topological invariant rather than a set of learned weights, TQNNs exhibit inherent resilience to local noise, an effect called **topological protection**.
 
-Because the classification signal lives in a topological invariant, TQNNs are inherently resilient to local noise: flipping a few pixels shifts individual spins, but the global amplitude barely changes, an effect called **topological protection**. This repository provides interactive simulators and visualization tools that let you explore these ideas hands-on.
+The library implements the full pipeline: spin-network encoding, amplitude evaluation, prototype-based classification, cobordism evolution, and noise-robustness analysis, all exposed through three interactive tkinter GUIs and a suite of static/animated visualization generators (~5,800 lines of Python).
 
 ## Quick Start
 
@@ -22,26 +22,17 @@ cd Topological-Quantum-Neural-Networks
 pip install -r requirements.txt
 ```
 
-Run any of the interactive applications:
+Launch any of the three interactive GUIs:
 
 ```bash
-# Real-time tensor network simulator (tkinter GUI)
-python "Code/Real Time Simulation/interactive_tqnn_tensor_network.py"
+python "Code/Real Time Simulation/interactive_tqnn_tensor_network.py"   # Tensor network simulator
+python "Code/Image Classification/interactive_tqnn_classifier.py"       # 6-panel classifier
+python "Code/Cobordism Viewer/cobordism_evolution_viewer.py"            # Cobordism viewer
+```
 
-# Interactive TQNN classifier (tkinter GUI, 6-panel)
-python "Code/Image Classification/interactive_tqnn_classifier.py"
+Or regenerate all static plots and animations in one step:
 
-# Cobordism evolution viewer (tkinter GUI)
-python "Code/Cobordism Viewer/cobordism_evolution_viewer.py"
-
-# Robustness sandbox (generates plots)
-python "Code/Static Visualization/tqnn_sandbox.py"
-
-# Static & animated visualizations (generates PNGs and GIFs)
-python "Code/Static Visualization/static_visualizations.py"
-python "Code/Static Visualization/animated_visualizations.py"
-
-# Regenerate all static plots and animations at once
+```bash
 python generate_all_plots.py
 ```
 
@@ -127,65 +118,55 @@ Pre-generated visualizations of the topological structures underlying TQNN compu
 
 ---
 
+## Architecture
+
+The codebase is organized around processor classes that implement the TQFT math and GUI classes that provide interactive frontends.
+
+| Class | Module | Role |
+|---|---|---|
+| `TQNNProcessor` | `interactive_tqnn_tensor_network.py` | Spin-network encoder, 6j-symbol evaluator, TQFT amplitude computation, MPS decomposition |
+| `TQNNSimulator` | `interactive_tqnn_classifier.py` | Pattern generation, noise injection, prototype-based classification pipeline |
+| `CobordismProcessor` | `cobordism_evolution_viewer.py` | TQFT functor evaluation along cylinder, pair-of-pants, and genus-handle cobordisms |
+| `TQNNPerceptron` | `tqnn_helpers.py` | Lightweight classifier: trains prototypes from labeled patterns, predicts via log-amplitude |
+| `TQNNVisualizerGUI` | `interactive_tqnn_tensor_network.py` | 1600-line tkinter app: drawing canvas, 4 synchronized matplotlib panels, tutorial system |
+| `TQNNClassifierGUI` | `interactive_tqnn_classifier.py` | 6-panel dark-themed dashboard for noise-robustness exploration |
+| `CobordismViewerGUI` | `cobordism_evolution_viewer.py` | 4-panel animated viewer with cobordism type selection and parameter sliders |
+
+All GUIs share a consistent dark theme (`#1a1a1a` background, `#00ff88` accent) with matplotlib figures embedded via `FigureCanvasTkAgg`.
+
+---
+
 ## Tech Stack
 
 | Category | Tools |
 |---|---|
-| Language | Python 3.10+ |
-| GUI | tkinter (dark theme), matplotlib embedded via `FigureCanvasTkAgg` |
-| Computation | numpy, scipy (linear algebra, optimization) |
-| Visualization | matplotlib, seaborn (`mako` / `cubehelix` palettes) |
-| Graph Theory | networkx |
-| Testing | pytest, GitHub Actions CI (3.10 / 3.11 / 3.12) |
+| Language | Python 3.10+ (~5,800 lines across 11 modules) |
+| GUI | tkinter (custom dark theme), matplotlib embedded via `FigureCanvasTkAgg` |
+| Computation | numpy, scipy (linear algebra, special functions, optimization) |
+| Visualization | matplotlib, seaborn (`mako` / `cubehelix` palettes), GIF export via `PillowWriter` |
+| Graph Theory | networkx (spin-network topology, charge-flow graphs) |
+| Testing | pytest (20 tests), GitHub Actions CI (Python 3.10 / 3.11 / 3.12) |
 
 ---
 
 <details>
 <summary><h2>Theoretical Background</h2></summary>
 
-### Overview
+The core thesis, inspired by [Marciano et al. (2022)](https://arxiv.org/abs/2210.13741), is that conventional DNNs can be understood as the semi-classical limit of a more general TQNN framework. TQNNs encode input data into **spin-networks** whose edges carry irreducible representations of $SU(2)_k$, then classify by evaluating TQFT transition amplitudes.
 
-The core thesis, inspired by the research of Marciano, Fields, Lulli, and others, is that conventional DNNs can be understood as the semi-classical limit of a more general TQNN framework. TQNNs leverage the properties of topological invariants, making them naturally resilient to local perturbations and noise (topological protection).
-
-### Spin-Network Encoding
-
-A TQNN processes information encoded in **spin-networks**: graphs whose edges are labeled by irreducible representations of a quantum group (e.g., $SU(2)_k$), called "colors" ($j$), and whose nodes represent intertwiners. Input data is encoded as:
+**Encoding.** Each input value $x_i$ maps to a spin label:
 
 $$j_i = N + \lfloor x_i \rfloor$$
 
 where $N$ is a large integer placing the system in the semi-classical regime.
 
-### TQFT Transition Amplitudes
+**Classification.** The TQFT functor $Z$ maps a cobordism $M$ to a transition amplitude $Z(\Sigma_{\text{in}}) \to Z(\Sigma_{\text{out}})$. For a class $c$ with prototype spins $\bar{j}_c$ and spread $\sigma_c$:
 
-The core operation is the evaluation of a TQFT functor $Z$, mapping a cobordism $M$ (the evolution of spin-networks) to a transition amplitude:
-
-$$Z(M): Z(\Sigma_{\text{in}}) \to Z(\Sigma_{\text{out}})$$
-
-For a class $c$ with prototype mean $\bar{j}$ and standard deviation $\sigma$:
-
-$$A_c \propto \prod_{i} \Delta_{j_i} e^{-\frac{(j_i - j_{c,i})^2}{2\sigma_{c,i}^2}}$$
-
-where $\Delta_{j_i} = 2j_i + 1$ is the quantum dimension. Classification uses:
+$$A_c \propto \prod_{i} (2j_i + 1) \, e^{-\frac{(j_i - \bar{j}_{c,i})^2}{2\sigma_{c,i}^2}}$$
 
 $$\text{prediction} = \arg\max_{c} \left( \log|A_c|^2 \right)$$
 
-### MPS Decomposition
-
-The quantum state from drawn patterns is decomposed into Matrix Product State (MPS) form:
-
-$$|\psi\rangle = \sum_{i_1,\ldots,i_n} A^{[1]}_{i_1} A^{[2]}_{i_2} \cdots A^{[n]}_{i_n} |i_1 i_2 \cdots i_n\rangle$$
-
-with entanglement entropy $S = -\sum_i \lambda_i^2 \log_2(\lambda_i^2)$ computed from Schmidt values.
-
-### Braiding and Fusion
-
-Anyonic braiding operations satisfy the Yang-Baxter equation:
-
-$$(B \otimes I)(I \otimes B)(B \otimes I) = (I \otimes B)(B \otimes I)(I \otimes B)$$
-
-Fusion of two spins follows $SU(2)$ rules:
-
-$$j_1 \otimes j_2 = \bigoplus_{j_3=|j_1-j_2|}^{j_1+j_2} j_3$$
+The quantum dimension factor $(2j_i + 1)$ and the topological nature of the amplitude are what give TQNNs their noise resilience.
 
 </details>
 
