@@ -6,9 +6,9 @@ Interactive tools for topological quantum neural networks: real-time tensor netw
 
 ## Overview
 
-Conventional neural networks learn by adjusting millions of floating-point weights through gradient descent. **Topological Quantum Neural Networks (TQNNs)** take a fundamentally different approach: they encode each input pixel as the *spin color* of an edge on a spin-network, then evaluate a topological quantum field theory (TQFT) transition amplitude to classify patterns — no gradient computation required.
+Conventional neural networks learn by adjusting millions of floating-point weights through gradient descent. **Topological Quantum Neural Networks (TQNNs)** take a fundamentally different approach: they encode each input pixel as the *spin color* of an edge on a spin-network, then evaluate a topological quantum field theory (TQFT) transition amplitude to classify patterns. No gradient computation is required.
 
-Because the classification signal lives in a topological invariant, TQNNs are inherently resilient to local noise: flipping a few pixels shifts individual spins, but the global amplitude barely changes — an effect called **topological protection**. This repository provides interactive simulators and visualization tools that let you explore these ideas hands-on.
+Because the classification signal lives in a topological invariant, TQNNs are inherently resilient to local noise: flipping a few pixels shifts individual spins, but the global amplitude barely changes, an effect called **topological protection**. This repository provides interactive simulators and visualization tools that let you explore these ideas hands-on.
 
 ## Quick Start
 
@@ -37,7 +37,7 @@ python "Code/Static Visualization/tqnn_sandbox.py"
 python "Code/Static Visualization/static_visualizations.py"
 python "Code/Static Visualization/animated_visualizations.py"
 
-# Regenerate all plots + GUI screenshots at once
+# Regenerate all static plots and animations at once
 python generate_all_plots.py
 ```
 
@@ -58,7 +58,7 @@ Draw a pattern on a 16 × 16 canvas and watch it get encoded, in real time, as a
 | **6j-symbol heatmap** | Recoupling coefficients that govern how three incoming spins fuse at a vertex |
 | **Semi-classical weights** | Distribution of the Gaussian suppression term across all spins |
 
-The $N_{\text{large}}$ slider (100 – 5 000) controls the semi-classical regime: higher values sharpen the amplitude peaks, showing how the TQFT limit converges to classical classification.
+The $N_{\text{large}}$ slider (100 to 5000) controls the semi-classical regime: higher values sharpen the amplitude peaks, showing how the TQFT limit converges to classical classification.
 
 ![Tensor Network Simulator](Plots/tqnn_overall.png)
 
@@ -67,22 +67,11 @@ The $N_{\text{large}}$ slider (100 – 5 000) controls the semi-classical regime
 | ![Drawing Canvas](Plots/drawing.png) | ![Tutorial System](Plots/tqnn_tutorial.png) |
 | Drawing canvas with hexagonal lattice mapping | Multi-page tutorial with color-coded sections |
 
-```python
-# From Code/Real Time Simulation/interactive_tqnn_tensor_network.py
-class TQNNProcessor:
-    def compute_transition_amplitude(self, input_spins, proto_mean, proto_std):
-        """
-        TQFT transition amplitude in the large-j limit:
-        A = prod_i Delta_{j_i} * exp(-(j_i - j_bar_i)^2 / (2 sigma_i^2))
-        where Delta_j = 2j + 1 is the quantum dimension.
-        """
-```
-
 ---
 
 ### Interactive TQNN Classifier
 
-A tkinter dark-themed GUI with six live panels that let you explore how topological protection keeps classification accurate under noise. Select one of four geometric patterns (vertical, horizontal, cross, circle), drag the noise slider to inject topological defects, and watch how the TQNN's confidence degrades — slowly, because the amplitude is a *global* topological invariant rather than a fragile local feature.
+A tkinter dark-themed GUI with six live panels that let you explore how topological protection keeps classification accurate under noise. Select one of four geometric patterns (vertical, horizontal, cross, circle), drag the noise slider to inject topological defects, and watch how the TQNN's confidence degrades slowly, because the amplitude is a *global* topological invariant rather than a fragile local feature.
 
 | Panel | Purpose |
 |---|---|
@@ -91,17 +80,9 @@ A tkinter dark-themed GUI with six live panels that let you explore how topologi
 | **Charge Flow** | Directed graph showing how topological charge propagates from the input layer through hidden nodes to the output |
 | **Classification** | Horizontal bar chart of per-class log-probabilities with the winning class highlighted |
 | **Spin-Network** | Hexagonal lattice where each node color encodes spin magnitude $j_i$ |
-| **Robustness** | Sweep of noise levels (0 – 50 %) showing all class curves; the current noise level is marked |
+| **Robustness** | Sweep of noise levels (0 to 50%) showing all class curves; the current noise level is marked |
 
-```python
-# From Code/Image Classification/interactive_tqnn_classifier.py
-class TQNNClassifierGUI:
-    """Tkinter dark-themed GUI with six embedded matplotlib panels."""
-    # --screenshot flag: save a headless capture and exit
-    #   python interactive_tqnn_classifier.py --screenshot Plots/Classifier_Demo.png
-```
-
-![Interactive TQNN Classifier](Plots/Classifier_Demo.png)
+![Interactive TQNN Classifier](Plots/topology.png)
 
 ---
 
@@ -114,29 +95,16 @@ This viewer animates the evolution of spin-network amplitudes as a cursor sweeps
 | Cobordism | Topology | Effect on spins |
 |---|---|---|
 | **Cylinder** | Identity ($\Sigma \times [0,1]$) | Spins pass through with small thermal jitter |
-| **Pair-of-Pants** | Splitting (genus 0, 3 boundaries) | Spins on the second half become pairwise averages — information shared between output legs |
+| **Pair-of-Pants** | Splitting (genus 0, 3 boundaries) | Spins on the second half become pairwise averages, sharing information between output legs |
 | **Genus Handle** | Non-trivial genus | Cyclic coupling mixes distant spins, simulating a loop in the manifold |
 
-```python
-# From Code/Cobordism Viewer/cobordism_evolution_viewer.py
-class CobordismProcessor:
-    """Compute TQFT amplitudes along a cobordism M : Σ_in → Σ_out."""
-    # --screenshot flag: python cobordism_evolution_viewer.py --screenshot Plots/Cobordism_Demo.png
-```
-
-![Cobordism Evolution Viewer](Plots/Cobordism_Demo.png)
+![Cobordism Evolution Viewer](Plots/cobordism.png)
 
 ---
 
 ### Robustness Sandbox
 
-How much noise can a TQNN tolerate before it misclassifies? The sandbox answers this quantitatively: it trains a `TQNNPerceptron` on four geometric patterns, then sweeps noise from 0 % to 50 % while recording per-class log-probabilities. The resulting curve shows a gradual, graceful degradation — the hallmark of topological protection — rather than the abrupt cliff typical of local-feature classifiers.
-
-```python
-# From Code/Static Visualization/tqnn_sandbox.py
-def plot_degradation(results, target_label, plot_path):
-    """Noise-vs-confidence curves for every class."""
-```
+How much noise can a TQNN tolerate before it misclassifies? The sandbox answers this quantitatively: it trains a `TQNNPerceptron` on four geometric patterns, then sweeps noise from 0% to 50% while recording per-class log-probabilities. The resulting curve shows a gradual, graceful degradation (the hallmark of topological protection) rather than the abrupt cliff typical of local-feature classifiers.
 
 ![TQNN Robustness](Plots/tqnn_robustness_sandbox.png)
 
@@ -144,14 +112,14 @@ def plot_degradation(results, target_label, plot_path):
 
 ### Static and Animated Visualizations
 
-Pre-generated braiding animations, charge flow diagrams, logical gate structures, and circuit compositions.
+Pre-generated visualizations of the topological structures underlying TQNN computation. Run `python generate_all_plots.py` to regenerate all of them.
 
 |  |  |
 |:--:|:--:|
 | ![Braiding Animation](Plots/tqnn_braiding_animation.gif) | ![Circuit Animation](Plots/tqnn_complex_circuit_animation.gif) |
-| Anyonic braiding (6 strands) | Toffoli gate circuit composition |
+| Six anyonic world-lines exchanging positions under the Yang-Baxter braid relation $B_{i} B_{i+1} B_{i} = B_{i+1} B_{i} B_{i+1}$ | Decomposition of a 3-qubit QFT into elementary topological gates, animated layer by layer |
 | ![Charge Flow](Plots/tqnn_charge_flow.png) | ![Logical Gate](Plots/tqnn_logical_gate.png) |
-| Charge flow through spin-network | Logical gate structure |
+| Directed charge-flow graph showing how conserved topological charge propagates through a TQNN layer | Logical gate structure built from fused anyon pairs, with fusion channels labeled by output spin $j_3$ |
 
 ---
 
@@ -163,10 +131,10 @@ Code/
   Image Classification/          # Tkinter 6-panel TQNN classifier
   Cobordism Viewer/              # Tkinter cobordism evolution viewer
   Static Visualization/          # Sandbox, static plots, animated GIFs, helpers
-Plots/                           # Generated figures, animations, and GUI screenshots
+Plots/                           # Generated figures and animations
 References/                      # Source papers (Marciano, Lulli, Fields)
 tests/                           # pytest suite (import + core logic)
-generate_all_plots.py            # Regenerate all visuals + GUI screenshots
+generate_all_plots.py            # Regenerate all static plots and animations
 ```
 
 ## Tech Stack
@@ -240,7 +208,6 @@ $$j_1 \otimes j_2 = \bigoplus_{j_3=|j_1-j_2|}^{j_1+j_2} j_3$$
 - [ ] **GPU acceleration**: Profile and optimize spin-network evaluation with CuPy or JAX
 - [ ] **PyPI packaging**: Package the core TQNN library for `pip install` distribution
 - [x] **CI/CD pipeline**: GitHub Actions workflow across Python 3.10/3.11/3.12 (`.github/workflows/ci.yml`)
-- [x] **Export functionality**: `--screenshot` flag on all tkinter GUIs for reproducible images (`generate_all_plots.py`)
 
 > [!NOTE]
 > This implementation simulates topological quantum behavior on classical hardware. While it demonstrates the principles of topological robustness, it does not provide the computational advantages of a true quantum computer.

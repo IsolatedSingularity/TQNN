@@ -26,8 +26,8 @@ python cobordism_evolution_viewer.py --screenshot ../../Plots/Cobordism_Demo.png
 
 ## Controls
 
-- **Cobordism type** — Cylinder (identity), Pair-of-Pants (splitting), Genus Handle (non-trivial topology)
-- **Input presets** — Vertical / Horizontal / Cross / Circle or Random
-- **Spins** — Number of edges on the input ring (4–40)
-- **σ** — Gaussian width in the amplitude formula
-- **Pause / Play** — freeze or resume the animated front
+- **Cobordism type**: Cylinder (identity), Pair-of-Pants (splitting), Genus Handle (non-trivial topology)
+- **Input presets**: Vertical / Horizontal / Cross / Circle or Random
+- **Spins**: Number of edges on the input ring (4-40)
+- **σ**: Gaussian width in the amplitude formula
+- **Pause / Play**: freeze or resume the animated front

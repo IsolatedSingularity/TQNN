@@ -26,12 +26,11 @@ from __future__ import annotations
 
 import sys
 import os
-import argparse
 import math
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
-from typing import Optional, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -176,7 +175,7 @@ class CobordismProcessor:
         """Transform spins through the cobordism at fractional parameter *frac* ∈ [0, 1]."""
         out = spins.copy()
         if self.cobordism_type == "Cylinder":
-            # Identity cobordism — small thermal jitter proportional to frac
+            # Identity cobordism: small thermal jitter proportional to frac
             out += frac * np.random.normal(0, 0.5, len(out))
         elif self.cobordism_type == "Pair-of-Pants":
             # Splitting: first half copied, second half averaged pairwise
@@ -242,14 +241,13 @@ class CobordismProcessor:
 class CobordismViewerGUI:
     """Tkinter dark-themed Cobordism Evolution Viewer."""
 
-    def __init__(self, screenshot_path: Optional[str] = None) -> None:
+    def __init__(self) -> None:
         self.proc = CobordismProcessor()
-        self.screenshot_path = screenshot_path
         self.running = True            # animation on/off
 
         # ── window ──────────────────────────────────────────────────
         self.root = tk.Tk()
-        self.root.title("Cobordism Evolution Viewer — Z(M) : Z(Σ_in) → Z(Σ_out)")
+        self.root.title("Cobordism Evolution Viewer")
         self.root.geometry("1700x1000")
         self.root.configure(bg=DARK_BG)
         self._apply_theme()
@@ -278,9 +276,6 @@ class CobordismViewerGUI:
 
         # ── animation loop ──────────────────────────────────────────
         self._schedule_tick()
-
-        if self.screenshot_path:
-            self.root.after(800, self._take_screenshot)
 
     # ──────────────────────────────────────────────────────────────────
     # Theme
@@ -446,7 +441,7 @@ class CobordismViewerGUI:
         self.canvas.draw_idle()
         self._refresh_status()
 
-    # 1 — Input spin-network ring
+    # 1 - Input spin-network ring
     def _draw_input(self) -> None:
         ax = self.ax_input; ax.clear(); ax.set_facecolor(DARK_AXES)
         n = self.proc.n_spins
@@ -465,7 +460,7 @@ class CobordismViewerGUI:
                      fontweight="bold", color=DARK_TEXT)
         ax.axis("off"); ax.set_aspect("equal")
 
-    # 2 — Cobordism surface with animated "front"
+    # 2 - Cobordism surface with animated "front"
     def _draw_cobordism(self) -> None:
         ax = self.ax_cobord; ax.clear(); ax.set_facecolor(DARK_AXES)
         t_param = np.linspace(0, 1, 200)
@@ -508,7 +503,7 @@ class CobordismViewerGUI:
         ax.set_yticks([]); ax.tick_params(colors=DARK_TEXT, labelsize=7)
         ax.grid(axis="x", color=DARK_GRID, alpha=0.3)
 
-    # 3 — Amplitude evolution
+    # 3 - Amplitude evolution
     def _draw_evolution(self) -> None:
         ax = self.ax_evol; ax.clear(); ax.set_facecolor(DARK_AXES)
         if not self.proc.amplitude_trace:
@@ -532,7 +527,7 @@ class CobordismViewerGUI:
         ax.tick_params(colors=DARK_TEXT, labelsize=7)
         ax.grid(color=DARK_GRID, alpha=0.35)
 
-    # 4 — Output class amplitudes
+    # 4 - Output class amplitudes
     def _draw_output(self) -> None:
         ax = self.ax_output; ax.clear(); ax.set_facecolor(DARK_AXES)
         if not self.proc.class_log_amps:
@@ -592,16 +587,6 @@ class CobordismViewerGUI:
         self.root.after(ANIMATION_MS, self._schedule_tick)
 
     # ──────────────────────────────────────────────────────────────────
-    # Screenshot
-    # ──────────────────────────────────────────────────────────────────
-
-    def _take_screenshot(self) -> None:
-        self._draw_all()
-        self.fig.savefig(self.screenshot_path, dpi=180, facecolor=DARK_BG, bbox_inches="tight")
-        print(f"Screenshot saved to {self.screenshot_path}")
-        self.root.destroy()
-
-    # ──────────────────────────────────────────────────────────────────
     # Entry
     # ──────────────────────────────────────────────────────────────────
 
@@ -614,12 +599,7 @@ class CobordismViewerGUI:
 # ═══════════════════════════════════════════════════════════════════════════
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Cobordism Evolution Viewer")
-    parser.add_argument("--screenshot", type=str, default=None,
-                        help="Save a screenshot to the given path and exit")
-    args = parser.parse_args()
-
-    app = CobordismViewerGUI(screenshot_path=args.screenshot)
+    app = CobordismViewerGUI()
     app.run()
 
 

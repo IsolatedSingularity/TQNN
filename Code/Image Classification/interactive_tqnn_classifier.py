@@ -24,12 +24,11 @@ from __future__ import annotations
 import sys
 import os
 import time
-import argparse
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
 from collections import deque
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -161,9 +160,8 @@ class TQNNSimulator:
 class TQNNClassifierGUI:
     """Tkinter dark-themed GUI with six embedded matplotlib panels."""
 
-    def __init__(self, screenshot_path: Optional[str] = None) -> None:
+    def __init__(self) -> None:
         self.sim = TQNNSimulator()
-        self.screenshot_path = screenshot_path
         self.auto_mode = False
 
         # --- Window ----------------------------------------------------------
@@ -190,10 +188,6 @@ class TQNNClassifierGUI:
 
         # --- Animation loop --------------------------------------------------
         self._schedule_tick()
-
-        # Screenshot mode: render one frame then save & exit
-        if self.screenshot_path:
-            self.root.after(600, self._take_screenshot)
 
     # ------------------------------------------------------------------
     # Theme
@@ -512,16 +506,6 @@ class TQNNClassifierGUI:
         self.root.after(ANIMATION_MS, self._schedule_tick)
 
     # ------------------------------------------------------------------
-    # Screenshot
-    # ------------------------------------------------------------------
-
-    def _take_screenshot(self) -> None:
-        self._draw_all()
-        self.fig.savefig(self.screenshot_path, dpi=180, facecolor=DARK_BG, bbox_inches="tight")
-        print(f"Screenshot saved to {self.screenshot_path}")
-        self.root.destroy()
-
-    # ------------------------------------------------------------------
     # Entry
     # ------------------------------------------------------------------
 
@@ -547,12 +531,7 @@ class TQNNClassifierGUI:
 # ═══════════════════════════════════════════════════════════════════════════
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="TQNN Interactive Classifier")
-    parser.add_argument("--screenshot", type=str, default=None,
-                        help="Save a screenshot to the given path and exit")
-    args = parser.parse_args()
-
-    app = TQNNClassifierGUI(screenshot_path=args.screenshot)
+    app = TQNNClassifierGUI()
     app.run()
 
 

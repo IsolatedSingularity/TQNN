@@ -3,8 +3,7 @@
 Generate All Plots
 
 Regenerates every static and animated visualization in the repository using the
-Agg (non-interactive) backend.  Also produces reproducible screenshots of the
-two tkinter GUIs in headless ``--screenshot`` mode, plus the robustness sandbox.
+Agg (non-interactive) backend, plus the robustness sandbox.
 
 Run from the repo root:
 
@@ -15,7 +14,6 @@ Outputs are written to Plots/ by default.
 
 import os
 import sys
-import subprocess
 
 # Use non-interactive backend so this works in headless CI environments
 import matplotlib
@@ -101,34 +99,6 @@ def main() -> None:
         )
     except Exception as exc:
         print(f"  [FAIL] sandbox: {exc}")
-
-    # --- GUI screenshots (--screenshot mode via subprocess) ---
-    print("\n--- GUI Screenshots (tkinter --screenshot) ---")
-    python = sys.executable
-    gui_scripts = [
-        (os.path.join(REPO_ROOT, 'Code', 'Image Classification',
-                      'interactive_tqnn_classifier.py'),
-         os.path.join(PLOTS_DIR, 'Classifier_Demo.png')),
-        (os.path.join(REPO_ROOT, 'Code', 'Cobordism Viewer',
-                      'cobordism_evolution_viewer.py'),
-         os.path.join(PLOTS_DIR, 'Cobordism_Demo.png')),
-    ]
-    for script, out_path in gui_scripts:
-        name = os.path.basename(script)
-        try:
-            env = os.environ.copy()
-            env['PYTHONUTF8'] = '1'
-            result = subprocess.run(
-                [python, script, '--screenshot', out_path],
-                timeout=30, capture_output=True, text=True,
-                encoding='utf-8', errors='replace', env=env,
-            )
-            if result.returncode == 0:
-                print(f"  [OK]   {name} -> {os.path.basename(out_path)}")
-            else:
-                print(f"  [FAIL] {name}: {result.stderr.strip()[:200]}")
-        except Exception as exc:
-            print(f"  [SKIP] {name}: {exc}")
 
     print("\n" + "=" * 60)
     print(f"  Done. Outputs are in {PLOTS_DIR}")
