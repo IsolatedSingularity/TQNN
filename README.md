@@ -219,7 +219,7 @@ Other quantum computing projects by the same author:
 | Repository | Description |
 |---|---|
 | [Quantum-Chemistry-Eigensolver](https://github.com/IsolatedSingularity/Quantum-Chemistry-Eigensolver) | Variational quantum eigensolver for molecular ground-state energies |
-| [Bloc-Fantome](https://github.com/IsolatedSingularity/Bloc-Fantome) | Quantum-inspired blockchain exploration |
+| [Bloc-Fantome](https://github.com/IsolatedSingularity/Bloc-Fantome) | Voxel sandbox with procedural terrain, liquid dynamics, and atmospheric lighting |
 | [Leonne](https://github.com/btq-ag/Leonne) | Modular consensus networks for cryptographic proof |
 | [QRiNG](https://github.com/btq-ag/QRiNG) | Quantum random number generation for consensus protocols |
 | [QLDPC](https://github.com/btq-ag/QLDPC) | Quantum LDPC code construction and circuit builder |
